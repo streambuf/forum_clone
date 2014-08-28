@@ -69,12 +69,15 @@ def replay(request):
 				resp = {"status": -1, 'error': "Ошибка2"}
 			else:
 				topic = Topic.objects.get(slug = url)
+				oldtopic = OldTopic.objects.get(slug = url)
 				timezone.localtime(timezone.now())
 				newans = Answer.objects.create(content = ans, dtime = datetime.now(),\
 				user = User.objects.get(id=request.user.id), topic = topic)
 				newans.save()
 				topic.count_answers += 1
+				oldtopic.count_answers += 1
 				topic.save()
+				oldtopic.save()
 				resp = {"status": 1}
 
 
@@ -236,4 +239,9 @@ def topic(request, slug, page_number = 1):
 		args['last_topics'] = OldTopic.objects.filter(category=topic.category).order_by("-id")[:5]
 	except ObjectDoesNotExist:
 		raise Http404
+	except EmptyPage:
+		raise Http404
+	except PageNotAnInteger:
+		raise Http404
+
 	return render_to_response('forum/topic.html', args)

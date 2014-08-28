@@ -123,12 +123,12 @@
 
 		{% for page in answers.paginator.page_range %}
 				{% if page < answers.number|add:"3" and page >= answers.number %}
-					<li {% if page == answers.number %}class="active"{% endif %}><a href="/{{topic.slug}}/{{ page }}">{{ page }}</a></li>
+					<li {% if page == answers.number %}class="active"{% endif %}><a href="/{{topic.slug}}/{{ page }}/">{{ page }}</a></li>
 				{%endif%}
 
 
 				{% if page > answers.number|add:"-3" and page < answers.number %}
-					<li {% if page == answers.number %}class="active"{% endif %}><a href="/{{topic.slug}}/{{ page }}">{{ page }}</a></li>
+					<li {% if page == answers.number %}class="active"{% endif %}><a href="/{{topic.slug}}/{{ page }}/">{{ page }}</a></li>
 				{%endif%}
 		{% endfor %}
 
@@ -163,7 +163,7 @@
 	<div class="block_bar">
 	  {% for topic in last_topics%}
 	  <div class="row last_topics">
-		  <a href="/{{topic.slug}}">{{topic.title}}</a>
+		  <a href="/{{topic.slug}}/">{{topic.title}}</a>
 
 		  <div class="row-fluid">
 			<div class="row_portal_left">
