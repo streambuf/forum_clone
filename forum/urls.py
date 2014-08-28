@@ -1,10 +1,6 @@
 from django.conf.urls import patterns, url
-
-from forum.sitemaps import SitemapXML, StaticSitemap
-
-sitemaps = {'static':StaticSitemap, 'main':SitemapXML}
-
 from forum import views
+
 
 urlpatterns = patterns('',
 	url(r'^$', views.forum, name='forum'),

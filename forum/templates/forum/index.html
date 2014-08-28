@@ -1,0 +1,86 @@
+{% extends 'main.html' %}
+{% load staticfiles %}
+{% block title %}
+ {% if category %}
+  {{ category.content }}
+ {% else %}
+  CodingTalk.Ru - болтовня и код в одном месте!
+ {% endif %}
+
+ {%if topics.number > 1 %} | Страница {{topics.number}} {%endif%} 
+{%endblock%}
+
+{%block description%}
+ {% if category %}
+  {% if category.id = 1 %}Общение совершенно на любые темы. Задавайте любые откровенные и интересующие вас вопросы. Говорите и вас услышат.
+  {% elif category.id = 2 %}Верстаете на HTML? Создаёте стиль CSS? Пишите на JavaScript? Если что-то не получается и возникаю ошибки - спрашивайте здесь.
+							Вам помогут.
+  {% elif category.id = 3 %}Программируете под web? Наверняка у вас возникают проблемы, которые трудно решить самому!? Этот форум поможет вам их решить.
+							Задайте вопрос и вам помогут.
+  {% else %} Ответы на любые техниеские вопросы, возникающие в повседневной жизни. От установки программы до починки утюга.
+  {% endif %}			 
+ {% else %}
+  Форум CodingTalk.Ru для общения кодеров, программистов и обычных людей. Общайтесь и задавайте вопросы. 
+  Только здесь вы получите ответ быстро. Ведь нас много.
+ {% endif %}
+{%endblock%}
+
+{% block index %}
+<div class="block">
+  <div class="header_bar">
+    <div class="title_bar">
+	  <h1 style="font-size: 32px; font-weight: bold;">
+		  {% if category %}
+			{{ category.content }}
+		  {% else %}
+			Последнее на форуме {{test}}
+		  {% endif %}
+	  </h1>
+	</div>
+  </div>
+
+	<br>
+	{% for topic in topics%}
+	  <div class="row row_portal">
+		  <a href="/{{topic.slug}}">{{topic.title}}</a>
+
+		  <div class="row-fluid">
+			<div class="row_portal_left">
+				Ответов: <b>{{topic.count_answers}}</b>  &#8594;  <b>{{topic.last_answer_username|safe}}</b>
+			</div>
+			<div class="answer_footer_right">
+				{{topic.last_answer_dtime|date:'H:i'}}
+			</div>
+		  </div>
+	  </div>
+	{%endfor%}
+
+
+	 <div class="row">
+				    <ul class="pager">
+						<li class=" li_left previous {% if not topics.has_previous %}disabled{% endif %}">
+							{% if topics.has_previous %}
+								<a href="{% if category %}/category/{{category.slug}}{%else%}/page{% endif%}/{{ topics.previous_page_number }}/">&larr; Назад</a>
+							{% else %}
+								<a href="#">&larr; Назад</a>
+							{% endif %}
+						</li>
+						<li class="next li_right {% if not topics.has_next %}disabled{% endif %}">
+							{% if topics.has_next %}
+								<a  href="{% if category %}/category/{{category.slug}}{%else%}/page{% endif%}/{{ topics.next_page_number }}/">Вперед &rarr;</a>
+							{% else %}
+								<a href="#">Вперед &rarr;</a>
+							{% endif %}
+						</li>
+					</ul>
+
+
+	</div>
+
+
+</div>
+
+{% endblock %}
+
+
+

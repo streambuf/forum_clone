@@ -180,8 +180,7 @@ def category(request, slug, page_number=1):
 		pages = current_page.page(page_number)
 		args['topics'] = pages
 		args['category'] = True
-		args['category_slug'] = cat.slug
-		args['category_content'] = cat.content
+		args['category'] = cat
 		args['user'] = auth.get_user(request)
 	except ObjectDoesNotExist:
 		raise Http404
