@@ -1,0 +1,48 @@
+{% extends 'main.html' %}
+{% load staticfiles %}
+{% block index %}
+<div class="corgi_feed_well">
+  <div class="sidebar_header">
+    <div class="sidebar_title">
+	  <h2>Последнее на форуме</h2>
+	</div>
+  </div>
+	
+	
+	{% for topic in topics%}
+	  <div class="row row_portal">
+		  <a href="/forum/{{topic.slug}}">{{topic.title}}</a>
+	  
+		  <div class="row">
+			<div class="row_portal_left">
+				Ответов: <b>{{topic.count_answers}}</b>  &#8594;  <b>{{topic.last_answer_username}}</b>
+			</div>	
+			<div class="bottom_right">
+				{{topic.last_answer_dtime|date:'H:i'}}
+			</div>
+		  </div>	
+	  </div>		
+	{%endfor%}
+	
+	<div class="row">
+		<div class="pagination li_left">
+			<ul>
+				{% if topics.has_previous %}
+					<li><a href="/forum{% if category %}/category/{{category_slug}}{% endif%}/{{ topics.previous_page_number }}/">&laquo;Назад</a></li>
+				{% endif %}
+			</ul>
+		</div>	
+		<div class="pagination li_right">
+			<ul>	
+				{% if topics.has_next %}
+						<li><a href="/forum{% if category %}/category/{{category_slug}}{% endif%}/{{ topics.next_page_number }}/">Дальше&raquo;</a></li>
+				{% endif %}				 
+			</ul>
+		</div>
+	</div>
+	  
+	
+	
+</div>
+
+{% endblock %}

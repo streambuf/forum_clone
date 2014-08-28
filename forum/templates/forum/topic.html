@@ -1,0 +1,182 @@
+{% extends 'main.html' %}
+{% block title %} {{topic.title}} {%if answers.number > 1 %} | Страница {{answers.number}} {%endif%}  {%endblock%}
+{%block description%} {{topic.content|striptags}} {%endblock%}
+{% load staticfiles %}
+{% block topic %}
+
+<div class="block">
+	<div class="header_bar">
+	  <div class="title_bar">
+		<h1>{{topic.title}}</h1>
+	  </div>
+	</div>
+
+	  <div class="answer_item">
+		<div class="answer_content">
+		  <div class="row">
+			<div class="answer_avatar">
+			  {%if topic.user.id < 16159%}
+			   <img src="/media/avatars/1%20({{topic.user.id}}).jpg" alt="avatar" class="avatar" />
+			  {%else%}
+			  <img src="/media/avatars/1%20({{topic.user.id|add:'-16158'}}).jpg" alt="avatar" class="avatar" />
+			  {%endif%}
+
+			</div>
+			<div class="answer_text">
+			  {%if topic.id < 25145%}
+			  <p style="word-wrap: break-word;">{{topic.content|safe}}</p>
+			  {%else%}
+			  <p style="word-wrap: break-word;">{{topic.content}}</p>
+			  {%endif%}
+			</div>
+		  </div>
+		</div>
+		<div class="reply">
+		  <p>Ответ добавится в конец темы</p>
+		  <form>
+			<div class="alert alert-error hide_content">
+				<label class="replay_error"></label>
+			</div>
+			<textarea spellcheck="false" rows="4" class="span12"></textarea><br/>
+			<button type="button" class="btn btn-success answer">Ответить</button>
+		  </form>
+		</div>
+		<hr class="forum_hr" />
+		<div class="answer_footer">
+		  <div class="row">
+			<div class="answer_footer_left">
+				<span class="a_profile"> {{topic.user.username|safe}}</span>
+			</div>
+			<div class="answer_footer_right">
+				<a href="" class="show_comment_link" {% if not user.is_authenticated %}style="display:none"{%endif%}>Ответить</a>
+				{% if user.is_authenticated %}<span>| </span>{%endif%}{{topic.dtime|date:'Y-m-d H:i'}}
+			</div>
+		  </div>
+		</div>
+	   </div>
+
+   </div>
+{%for answer in answers%}
+   <div class="block">
+
+	  <div class="answer_item">
+		<div class="answer_content">
+		  <div class="row">
+			<div class="answer_avatar">
+			    {%if answer.user.id < 16159%}
+			   <img src="/media/avatars/1%20({{answer.user.id}}).jpg" alt="avatar" class="avatar" />
+			  {%else%}
+			  <img src="/media/avatars/1%20({{answer.user.id|add:'-16158'}}).jpg" alt="avatar" class="avatar" />
+			  {%endif%}
+
+			</div>
+			<div class="answer_text">
+			{%if answer.id < 465763%}
+			  <p style="word-wrap: break-word;">{{answer.content|safe}}</p>
+			  {%else%}
+			  <p style="word-wrap: break-word;">{{answer.content}}</p>
+			 {%endif%}
+			</div>
+		  </div>
+		</div>
+		<div class="reply">
+		  <p>Ответ добавится в конец темы</p>
+		  <form>
+			<div class="alert alert-error hide_content">
+				<label class="replay_error"></label>
+			</div>
+			<textarea spellcheck="false" rows="4" class="span12"></textarea><br/>
+			<button type="button" class="btn btn-success answer">Ответить</button>
+		  </form>
+		</div>
+		<hr class="forum_hr" />
+		<div class="answer_footer">
+		  <div class="row">
+			<div class="answer_footer_left">
+				<span class="a_profile"> {{answer.user.username|safe}}</span>
+			</div>
+			<div class="answer_footer_right">
+				<a href="" class="show_comment_link" {% if not user.is_authenticated %}style="display:none"{%endif%}>Ответить</a>
+				{% if user.is_authenticated %}<span>| </span>{%endif%}{{answer.dtime|date:'Y-m-d H:i'}}
+			</div>
+		  </div>
+		</div>
+	   </div>
+
+   </div>
+{%endfor%}
+<div class="pagination pagination-centered">
+
+	<ul>
+		{% if answers.has_previous %}
+			<li><a href="/{{topic.slug}}/{{ answers.previous_page_number }}/">&laquo;Назад</a></li>
+		{% else %}
+			<li class="disable"><span>&laquo;Назад</span></li>
+		{% endif %}
+
+		{% if answers.number >= 4 %}
+			<li><a href="/{{topic.slug}}/1/">1</a></li>
+			{% if answers.number > 4 %}
+				<li class="disable"><span>...</span></li>
+			{% endif %}
+		{% endif %}
+
+		{% for page in answers.paginator.page_range %}
+				{% if page < answers.number|add:"3" and page >= answers.number %}
+					<li {% if page == answers.number %}class="active"{% endif %}><a href="/{{topic.slug}}/{{ page }}">{{ page }}</a></li>
+				{%endif%}
+
+
+				{% if page > answers.number|add:"-3" and page < answers.number %}
+					<li {% if page == answers.number %}class="active"{% endif %}><a href="/{{topic.slug}}/{{ page }}">{{ page }}</a></li>
+				{%endif%}
+		{% endfor %}
+
+		{% if answers.number <= last_page|add:"-3" %}
+			{% if answers.number < last_page|add:"-3" %}
+				<li class="disable"><span>...</span></li>
+			{% endif %}
+			<li><a href="/{{topic.slug}}/{{ last_page }}/">{{last_page}}</a></li>
+		{% endif %}
+
+		{% if answers.has_next %}
+				<li><a href="/{{topic.slug}}/{{ answers.next_page_number }}/">Дальше&raquo;</a></li>
+		{% else %}
+			<li class="disable"><span>Дальше&raquo;</span></li>
+		{% endif %}
+	</ul>
+</div>
+
+
+
+{% endblock %}
+
+{% block last_topics %}
+
+<div class="block">
+	<div class="header_bar">
+	  <div class="title_bar">
+		<p style="font-size:24px; font-weight:bold;">Последнее в этом разделе</p>
+	  </div>
+	</div>
+	<hr class="forum_hr" />
+	<div class="block_bar">
+	  {% for topic in last_topics%}
+	  <div class="row last_topics">
+		  <a href="/{{topic.slug}}">{{topic.title}}</a>
+
+		  <div class="row-fluid">
+			<div class="row_portal_left">
+				Ответов: <b>{{topic.count_answers}}</b>  &#8594;  <b>{{topic.last_answer_username|safe}}</b>
+			</div>
+			<div class="answer_footer_right">
+				{{topic.last_answer_dtime|date:'H:i'}}
+			</div>
+		  </div>
+	  </div>
+	{%endfor%}
+
+	</div>
+</div>
+
+{% endblock %}
