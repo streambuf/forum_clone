@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+{% load staticfiles %}
+{% block index %}
+<div class="block">
+  <div class="header_bar">
+    <div class="title_bar">
+      <h1 style="font-size: 32px; font-weight: bold;">
+		Карта сайта
+      </h1>
+    </div>
+  </div>
+		<ul><li><strong>Категория:</strong> <a href="/category/talk/">Общение</a></li>
+		{% for topic in topics1 %}
+			<ul><li><a href="/{{topic.slug}}/">{{topic.title}}</a></li></ul>
+		{% endfor %}
+		</ul>
+		<ul><li><strong>Категория:</strong> <a href="/category/html-css-javascript/">HTML CSS JavaScript</a></li>
+        {% for topic in topics2 %}
+            <ul><li><a href="/{{topic.slug}}/">{{topic.title}}</a></li></ul>
+        {% endfor %}
+        </ul>
+		<ul><li><strong>Категория:</strong> <a href="/category/programming/">Программирование(PHP, MySQL, другое)</a></li>
+        {% for topic in topics3 %}
+            <ul><li><a href="/{{topic.slug}}/">{{topic.title}}</a></li></ul>
+        {% endfor %}
+        </ul>
+		<ul><li><strong>Категория:</strong> <a href="/category/technical/">Технический</a></li>
+        {% for topic in topics4 %}
+            <ul><li><a href="/{{topic.slug}}/">{{topic.title}}</a></li></ul>
+        {% endfor %}
+        </ul>
+
+</div>	
+	
+{% endblock %}
+

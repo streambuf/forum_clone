@@ -3,13 +3,27 @@
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'wen.settings'
 from django.core.management.base import BaseCommand, CommandError
-from forum.models import Topic, OldTopic, Help, Category
+from forum.models import Topic, OldTopic, Help, Category, TwitterAccount
 import xml.etree.cElementTree as ET
 from datetime import datetime
+import urllib
+import urllib2
+import twitter
+
+def post_twitter(num, url, title):
+	ac = TwitterAccount.objects.get(id=num)
+	api = twitter.Api(consumer_key = ac.api_key,
+					consumer_secret = ac.api_secret,
+					access_token_key = ac.token,
+					access_token_secret= ac.token_secret)
+	mes = title + ' http://' + url
+	api.PostUpdate(mes)
+	return 1
 
 class Command(BaseCommand):
  
 	def handle(self, *args, **options):
+		num = 1 # номер аккаунта для твита
 		for i in range(1,5):
 			catx = Topic.objects.filter(category_id = i)
 			max_id = len(catx) - 1
@@ -25,6 +39,13 @@ class Command(BaseCommand):
 					last_answer_dtime = t.last_answer_dtime, last_answer_username = t.last_answer_username,\
 					count_answers = t.count_answers, slug = t.slug)
 				newtopic.save()
+				url = 'codingtalk.ru/' + newtopic.slug + '/'
+				post_twitter(num, url, newtopic.title)
+				params = {'key':'aac529c6d22797dbd8876b47f25f92b18d6c09f1','login':'hostdjango','search_id':'2170920','urls':url}
+				url = 'http://site.yandex.ru/ping.xml?login=hostdjango&search_id=2170920&key=aac529c6d22797dbd8876b47f25f92b18d6c09f1&urls='
+				req = urllib2.Request(url + urllib.urlencode(params), headers={'User-Agent':'Mozilla/5.0', 'Accept-Charset':'utf-8'})
+				page = urllib2.urlopen(req).read()
+				num += 1
 				if i%2 == 0:
 					break
 		urlset = ET.Element("urlset")
@@ -73,4 +94,8 @@ class Command(BaseCommand):
 		tree = ET.ElementTree(urlset)
 		tree.write("/var/www/wen/forum/media/sitemap.xml")
 		
+		params = {'key':'aac529c6d22797dbd8876b47f25f92b18d6c09f1','login':'hostdjango','search_id':'2170920','urls':'codingtalk.ru/sitemap.xml'}
+		url = 'http://site.yandex.ru/ping.xml?login=hostdjango&search_id=2170920&key=aac529c6d22797dbd8876b47f25f92b18d6c09f1&urls='
+		req = urllib2.Request(url + urllib.urlencode(params), headers={'User-Agent':'Mozilla/5.0', 'Accept-Charset':'utf-8'})
+		page = urllib2.urlopen(req).read()
 

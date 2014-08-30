@@ -12,6 +12,15 @@ from django.contrib import auth
 from django.utils.html import strip_tags
 from django.views.decorators.csrf import csrf_exempt
 from pytils.translit import slugify
+import urllib
+import urllib2
+
+def send_ping(request):
+	params = {'key':'aac529c6d22797dbd8876b47f25f92b18d6c09f1','login':'hostdjango','search_id':'2170920','urls':'codingtalk.ru/sitemap.xml'}
+	url = 'http://site.yandex.ru/ping.xml?login=hostdjango&search_id=2170920&key=aac529c6d22797dbd8876b47f25f92b18d6c09f1&urls='
+	req = urllib2.Request(url + urllib.urlencode(params), headers={'User-Agent':'Mozilla/5.0', 'Accept-Charset':'utf-8'})
+	page = urllib2.urlopen(req)
+	return HttpResponse(page.read())
 
 @csrf_exempt
 def new_topic(request):
@@ -173,6 +182,23 @@ def showurls(request):
 	args['user'] = auth.get_user(request)
 	return render_to_response('forum/showurls.html', args)
 
+def sitemap_html(request):
+	args = {}
+	try:
+		args['topics1'] = OldTopic.objects.filter(category__id=1).order_by("-id")
+		args['topics2'] = OldTopic.objects.filter(category__id=2).order_by("-id")
+		args['topics3'] = OldTopic.objects.filter(category__id=3).order_by("-id")
+		args['topics4'] = OldTopic.objects.filter(category__id=4).order_by("-id")
+		args['category'] = category
+		args['user'] = auth.get_user(request)
+	except ObjectDoesNotExist:
+		raise Http404
+	except EmptyPage:
+		raise Http404
+	except PageNotAnInteger:
+		raise Http404
+	return render_to_response('forum/sitemap.html', args, context_instance=RequestContext(request))
+
 
 def category(request, slug, page_number=1):
 	args = {}
@@ -182,7 +208,6 @@ def category(request, slug, page_number=1):
 		current_page = Paginator(topics_list, 50)
 		pages = current_page.page(page_number)
 		args['topics'] = pages
-		args['category'] = True
 		args['category'] = cat
 		args['user'] = auth.get_user(request)
 	except ObjectDoesNotExist:
@@ -191,7 +216,7 @@ def category(request, slug, page_number=1):
 		raise Http404
 	except PageNotAnInteger:
 		raise Http404
-	return render_to_response('forum/index.html', args)
+	return render_to_response('forum/index.html', args, context_instance=RequestContext(request))
 
 
 def forum(request, page_number=1):

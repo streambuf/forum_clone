@@ -58,3 +58,14 @@ class Help(models.Model):
     number = models.IntegerField(default='0')
     def __unicode__(self):
         return self.name
+
+class TwitterAccount(models.Model):
+	name = models.CharField(max_length=80)
+	password = models.CharField(max_length=50)
+	api_key = models.CharField(max_length=50)
+	api_secret = models.CharField(max_length=50)
+	token = models.CharField(max_length=50)
+	token_secret = models.CharField(max_length=50)  
+	def __unicode__(self):
+		return self.name
+
